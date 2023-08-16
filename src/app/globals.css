@@ -12,16 +12,17 @@
   :root {
     --foreground-rgb: 255, 255, 255;
     --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+    --background-end-rgb: 5, 5, 5;
   }
 }
 
 body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+    45deg,
+    hsl(240deg 100% 1%) 14%,
+    hsl(263deg 59% 14%) 81%,
+    hsl(286deg 78% 23%) 98%,
+    hsl(292deg 80% 38%) 101%
+  ) no-repeat center center fixed;
 }
