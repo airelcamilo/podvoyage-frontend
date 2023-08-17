@@ -1,11 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { IconButton, HStack } from "@chakra-ui/react";
+import { IconButton, HStack, Center } from "@chakra-ui/react";
 import { FaArrowRotateLeft, FaArrowRotateRight, FaCirclePlay, FaCirclePause, FaCircleCheck } from 'react-icons/fa6';
-import { EpisodeData } from '@/interface/types/PodcastData';
 import PlaybackSpeedButton from './PlaybackSpeedButton';
-import { BaseResponse } from '@/interface/types/BaseResponse';
-import Episode from '../podcast/Episode';
-
 interface ControlsProps {
   audioRef: any;
   progressBarRef: any;
@@ -88,6 +84,7 @@ const Controls: React.FC<ControlsProps> = ({ audioRef, progressBarRef, setCurren
   return (
     <>
       <HStack>
+        <Center>
         <IconButton
           onClick={() => markAsPlayed()}
           aria-label='Mark as played'
@@ -120,6 +117,7 @@ const Controls: React.FC<ControlsProps> = ({ audioRef, progressBarRef, setCurren
           mx='10%' />
 
         <PlaybackSpeedButton audioRef={audioRef} />
+        </Center>
       </HStack>
     </>
   );

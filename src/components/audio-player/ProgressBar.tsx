@@ -21,7 +21,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ audioRef, duration, progressB
   return (
     <HStack w='100%'>
       <Show above='md'>
-        <Text align='right' mr='5px' w='60px'>{convertDurationDense(currentTime)}</Text>
+        <Text align='right' mr='5px' w='150px'>{convertDurationDense(currentTime)}</Text>
       </Show>
       <Slider
         aria-label='Episode time'
@@ -46,7 +46,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ audioRef, duration, progressB
         </Tooltip>
       </Slider>
       <Show above='md'>
-        <Text align='left' ml='5px' w='60px'>{convertDurationDense(duration)}</Text>
+        <Text align='left' ml='5px' w='150px'>{convertDurationDense(duration)}</Text>
       </Show>
     </HStack>
   );

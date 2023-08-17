@@ -1,6 +1,6 @@
 # Podvoyage Frontend
 
-Welcome to the frontend code repository for Podvoyage, a podcast player application. With Podvoyage, you can easily search your favorite podcasts, save it for later, and listen to it. This project utilizes `React.js`, a dynamic javascript framework and `Chakra UI`, component library.
+Welcome to the frontend code repository for Podvoyage, a podcast player application. With Podvoyage, you can easily search your favorite podcasts, save it for later, and listen to it. This project utilizes `React` with `Next.js` for the framework and `Chakra UI`, a component library.
 
 ## Features
 1. **Search your favorite podcast** using iTunes API

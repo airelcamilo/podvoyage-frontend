@@ -25,12 +25,14 @@ const PodcastList = () => {
             {(isSearch) ? 'Search Podcast' : 'Subscribed Podcast'}
           </Heading>
           <Spacer />
-          <IconButton
+          {(isSearch) 
+          ? ''
+          : <IconButton
             aria-label='Add Folder'
             onClick={onOpen}
             icon={<FaPlus />}
             variant="custom"
-          />
+          /> }
           <AddFolderModal
           isOpen={isOpen}
           onClose={onClose}/>
