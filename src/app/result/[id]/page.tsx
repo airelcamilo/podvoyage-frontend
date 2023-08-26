@@ -4,7 +4,6 @@ import PodcastDetail from "@/components/podcast/PodcastDetail";
 import { Box, Center, CircularProgress, Text } from "@chakra-ui/react";
 import { useState, useEffect } from 'react';
 import { PodcastData } from "@/interface/types/PodcastData";
-import { BaseResponse } from "@/interface/types/BaseResponse";
 
 const Result = ({ params }: { params: { id: string } }) => {
   const [isLoading, setLoading] = useState(true);
@@ -17,7 +16,7 @@ const Result = ({ params }: { params: { id: string } }) => {
       '/api/search-pod/' + params.id
     );
 
-    const data: BaseResponse<PodcastData> = await response.json();
+    const data: PodcastData = await response.json();
     setResult(data);
     setLoading(false);
   };

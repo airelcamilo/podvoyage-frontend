@@ -1,4 +1,3 @@
-import { BaseResponse } from "@/interface/types/BaseResponse";
 import { ItemData } from "@/interface/types/ItemData";
 import { PodcastData } from "@/interface/types/PodcastData";
 
@@ -8,7 +7,7 @@ export const updateItems = async (setItems: (data: ItemData[]) => void) => {
     '/api/all'
   );
 
-  const data: BaseResponse<ItemData[]> = await response.json();
+  const data: ItemData[] = await response.json();
   setItems(data);
 }
 
@@ -18,6 +17,6 @@ export const updatePodcasts = async (setPodcasts: (data: PodcastData[]) => void)
       '/api/podcasts'
     );
 
-    const data: BaseResponse<PodcastData[]> = await response.json();
+    const data: PodcastData[] = await response.json();
     setPodcasts(data);
   }

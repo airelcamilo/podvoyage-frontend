@@ -4,7 +4,6 @@ import FolderList from "@/components/folder/FolderList";
 import { useState, useEffect } from "react";
 import { FolderData } from "@/interface/types/FolderData";
 import { Box, Center, CircularProgress, Text } from "@chakra-ui/react";
-import { BaseResponse } from "@/interface/types/BaseResponse";
 
 const Folder = ({ params }: { params: { id: string } }) => {
   const [isLoading, setLoading] = useState(true);
@@ -17,7 +16,7 @@ const Folder = ({ params }: { params: { id: string } }) => {
       '/api/folder/' + params.id
     );
 
-    const data: BaseResponse<FolderData> = await response.json();
+    const data: FolderData = await response.json();
     setFolder(data);
     setLoading(false);
   }

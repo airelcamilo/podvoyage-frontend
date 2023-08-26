@@ -41,7 +41,7 @@ export const PodcastSearchContextProvider: React.FC<ChildrenProps> = ({
       '/api/podcasts'
     );
 
-    const data: BaseResponse<PodcastData[]> = await response.json();
+    const data: PodcastData[] = await response.json();
     setPodcasts(data);
   }
 
@@ -51,7 +51,7 @@ export const PodcastSearchContextProvider: React.FC<ChildrenProps> = ({
       '/api/all'
     );
 
-    const data: BaseResponse<ItemData[]> = await response.json();
+    const data: ItemData[] = await response.json();
     setItems(data);
     setLoading(false);
     setSearch(false);

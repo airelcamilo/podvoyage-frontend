@@ -27,7 +27,7 @@ const Controls: React.FC<ControlsProps> = ({ audioRef, progressBarRef, setCurren
 
     if (currentTime >= audioRef.current.duration) {
       markAsPlayed();
-      cancelAnimationFrame(playAnimationRef.current);
+      cancelAnimationFrame(playAnimationRef.current!);
     } else {
 
       if (isForward) {
@@ -35,6 +35,8 @@ const Controls: React.FC<ControlsProps> = ({ audioRef, progressBarRef, setCurren
       } else if (isBackward) {
         backward(currentTime);
       } else {
+        {/* 
+        // @ts-ignore */}
         playAnimationRef.current = requestAnimationFrame(repeat);
         if (progressBarRef != null) {
           progressBarRef.current.value = currentTime;
@@ -63,6 +65,8 @@ const Controls: React.FC<ControlsProps> = ({ audioRef, progressBarRef, setCurren
   useEffect(() => {
     if (isPlaying) {
       audioRef.current.play();
+      {/* 
+      // @ts-ignore */}
       playAnimationRef.current = requestAnimationFrame(repeat);
     } else {
       audioRef.current.pause();
@@ -77,7 +81,7 @@ const Controls: React.FC<ControlsProps> = ({ audioRef, progressBarRef, setCurren
         setCurrentTimeinAPI();
         setIsPaused(false);
       }
-      cancelAnimationFrame(playAnimationRef.current);
+      cancelAnimationFrame(playAnimationRef.current!);
     }
   }, [isPlaying, audioRef, repeat]);
 
@@ -85,38 +89,38 @@ const Controls: React.FC<ControlsProps> = ({ audioRef, progressBarRef, setCurren
     <>
       <HStack>
         <Center>
-        <IconButton
-          onClick={() => markAsPlayed()}
-          aria-label='Mark as played'
-          icon={<FaCircleCheck size='25px' />}
-          isRound={true}
-          variant='customTransparent'
-          mr='10%' />
+          <IconButton
+            onClick={() => markAsPlayed()}
+            aria-label='Mark as played'
+            icon={<FaCircleCheck size='25px' />}
+            isRound={true}
+            variant='customTransparent'
+            mr='10%' />
 
-        <IconButton
-          onClick={() => setIsBackward(true)}
-          aria-label='Skip backward'
-          icon={<FaArrowRotateLeft size='25px' />}
-          isRound={true}
-          variant='customTransparent'
-          mr='10%' />
+          <IconButton
+            onClick={() => setIsBackward(true)}
+            aria-label='Skip backward'
+            icon={<FaArrowRotateLeft size='25px' />}
+            isRound={true}
+            variant='customTransparent'
+            mr='10%' />
 
-        <IconButton
-          onClick={togglePlayPause}
-          aria-label={isPlaying ? 'Pause' : 'Play'}
-          icon={isPlaying ? <FaCirclePause size='40px' /> : <FaCirclePlay size='40px' />}
-          isRound={true}
-          variant='customTransparent' />
+          <IconButton
+            onClick={togglePlayPause}
+            aria-label={isPlaying ? 'Pause' : 'Play'}
+            icon={isPlaying ? <FaCirclePause size='40px' /> : <FaCirclePlay size='40px' />}
+            isRound={true}
+            variant='customTransparent' />
 
-        <IconButton
-          onClick={() => setIsForward(true)}
-          aria-label='Skip forward'
-          icon={<FaArrowRotateRight size='25px' />}
-          isRound={true}
-          variant='customTransparent'
-          mx='10%' />
+          <IconButton
+            onClick={() => setIsForward(true)}
+            aria-label='Skip forward'
+            icon={<FaArrowRotateRight size='25px' />}
+            isRound={true}
+            variant='customTransparent'
+            mx='10%' />
 
-        <PlaybackSpeedButton audioRef={audioRef} />
+          <PlaybackSpeedButton audioRef={audioRef} />
         </Center>
       </HStack>
     </>

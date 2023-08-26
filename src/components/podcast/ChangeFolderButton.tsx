@@ -3,7 +3,6 @@ import { Menu, MenuButton, MenuList, MenuOptionGroup, MenuItemOption, Button } f
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { FaFolderOpen } from "react-icons/fa6";
-import { BaseResponse } from '@/interface/types/BaseResponse';
 import { PodcastData } from '@/interface/types/PodcastData';
 import { usePodcastSearchContext } from '../PodcastSearchContext';
 import { updateItems } from '@/utils/UpdateItems';
@@ -23,7 +22,7 @@ const ChangeFolderButton: React.FC<ChangeFolderButtonProps> = ({ podcast }) => {
       '/api/folders'
     );
 
-    const data: BaseResponse<FolderData[]> = await response.json();
+    const data: FolderData[] = await response.json();
     setFolders(data);
   }
 
