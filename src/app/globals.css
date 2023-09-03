@@ -25,4 +25,13 @@ body {
     hsl(286deg 78% 23%) 98%,
     hsl(292deg 80% 38%) 101%
   ) no-repeat center center fixed;
+  height: 100%;
+}
+
+html {
+  height: 100%;
+}
+
+.unauthorized {
+  height: 100%;
 }

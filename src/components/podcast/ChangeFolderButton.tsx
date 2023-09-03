@@ -3,21 +3,22 @@ import { Menu, MenuButton, MenuList, MenuOptionGroup, MenuItemOption, Button } f
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { FaFolderOpen } from "react-icons/fa6";
-import { PodcastData } from '@/interface/types/PodcastData';
 import { usePodcastSearchContext } from '../PodcastSearchContext';
 import { updateItems } from '@/utils/UpdateItems';
+import { useUserContext } from '../user/UserContext';
 
 interface ChangeFolderButtonProps {
-  podcast: PodcastData;
+  podcastId: number;
 }
 
-const ChangeFolderButton: React.FC<ChangeFolderButtonProps> = ({ podcast }) => {
+const ChangeFolderButton: React.FC<ChangeFolderButtonProps> = ({ podcastId }) => {
   const { setItems } = usePodcastSearchContext();
   const [folders, setFolders] = useState<FolderData[]>([]);
   const [inFolder, setInFolder] = useState<number>(0);
+  const { authFetch } = useUserContext();
 
   const fetchFolders = async () => {
-    const response = await fetch(
+    const response = await authFetch(
       process.env.NEXT_PUBLIC_POD_API_URL +
       '/api/folders'
     );
@@ -27,9 +28,9 @@ const ChangeFolderButton: React.FC<ChangeFolderButtonProps> = ({ podcast }) => {
   }
 
   const fetchCheckInFolder = async () => {
-    const response = await fetch(
+    const response = await authFetch(
       process.env.NEXT_PUBLIC_POD_API_URL +
-      '/api/in-folder/' + podcast.id
+      '/api/in-folder/' + podcastId
     );
 
     const data: number = await response.json();
@@ -38,11 +39,11 @@ const ChangeFolderButton: React.FC<ChangeFolderButtonProps> = ({ podcast }) => {
 
   const handleChange = async (folderId: any) => {
     setInFolder(folderId);
-    await fetch(
+    await authFetch(
       process.env.NEXT_PUBLIC_POD_API_URL +
-      '/api/change-folder/' + folderId + '/' + podcast.id
+      '/api/change-folder/' + folderId + '/' + podcastId
     );
-    updateItems(setItems);
+    updateItems(setItems, authFetch);
   }
 
   useEffect(() => {

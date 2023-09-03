@@ -1,11 +1,15 @@
 'use client'
 
-import { Box, VStack, HStack, Button, Avatar, Flex, Drawer, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerBody, useDisclosure, Text } from '@chakra-ui/react'
-import { FaHouseChimney, FaAngleLeft, FaBars } from "react-icons/fa6";
+import {
+  Box, VStack, Button, Flex, Drawer, DrawerOverlay, DrawerContent,
+  DrawerCloseButton, DrawerBody, useDisclosure, Text, Icon
+} from '@chakra-ui/react'
+import { FaHouseChimney, FaAngleLeft, FaBars, FaGear, FaRightToBracket } from "react-icons/fa6";
 import { useRouter, usePathname } from 'next/navigation';
 import React, { useRef } from 'react';
 import { usePodcastSearchContext } from '../PodcastSearchContext';
 import Searchbar from './Searchbar';
+import { useUserContext } from '../user/UserContext';
 
 const Navbar = () => {
   const { fetchData } = usePodcastSearchContext();
@@ -13,6 +17,7 @@ const Navbar = () => {
   const btnRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
   const pathname = usePathname();
+  const { token, logout } = useUserContext();
 
   const home = () => {
     if (pathname != '/')
@@ -55,10 +60,6 @@ const Navbar = () => {
             <DrawerCloseButton />
             <DrawerBody>
               <VStack align="start" mt='80px'>
-                <HStack align='start'>
-                  <Avatar name='Airel' src='https://bit.ly/dan-abramov' size='sm' ml='10px' mr='10px' />
-                  <Text alignSelf='center'>Airel</Text>
-                </HStack>
                 <Button
                   colorScheme='purple'
                   aria-label='Home'
@@ -72,6 +73,19 @@ const Navbar = () => {
                   onClick={back}>
                   <FaAngleLeft />
                   <Text ml='30px'>Back</Text>
+                </Button>
+                <Button
+                  colorScheme='purple'
+                  aria-label='Home'>
+                  <FaGear />
+                  <Text ml='30px'>Settings</Text>
+                </Button>
+                <Button
+                  colorScheme='purple'
+                  aria-label='Home'
+                  onClick={() => logout(token)}>
+                  <Icon as={FaRightToBracket} color='red' />
+                  <Text ml='30px' color='red'>Logout</Text>
                 </Button>
               </VStack>
             </DrawerBody>

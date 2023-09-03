@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import { FaPlus } from "react-icons/fa6";
 import { updateItems } from '@/utils/UpdateItems';
+import { useUserContext } from '../user/UserContext';
 
 interface AddFolderModalProps {
   isOpen: boolean;
@@ -16,6 +17,7 @@ const AddFolderModal: React.FC<AddFolderModalProps> = ({ isOpen, onClose }) => {
   const { handleSubmit, register } = useForm();
   const [isHover, setIsHover] = useState(false);
   const toast = useToast();
+  const { authFetch } = useUserContext();
 
   const over = () => {
     setIsHover(true);
@@ -26,19 +28,16 @@ const AddFolderModal: React.FC<AddFolderModalProps> = ({ isOpen, onClose }) => {
 
   const addFolder = async (query: any) => {
     const param = query['folderName']
-
-    const requestOptions = {
+    await authFetch(
+      process.env.NEXT_PUBLIC_POD_API_URL +
+      '/api/folder', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ folderName: param })
     }
-
-    await fetch(
-      process.env.NEXT_PUBLIC_POD_API_URL +
-      '/api/folder', requestOptions
     );
 
-    updateItems(setItems);
+    updateItems(setItems, authFetch);
 
     toast({
       title: `Add folder`,
@@ -66,26 +65,26 @@ const AddFolderModal: React.FC<AddFolderModalProps> = ({ isOpen, onClose }) => {
               <FormControl maxWidth={{ base: 'full', xl: 'xl' }} pt='3px'>
                 <Text mb='15px'>Folder name</Text>
                 <InputGroup size='md'>
-                    <Input {...register('folderName')}
-                      w='100%'
-                      focusBorderColor='purple.400'
-                      _hover={{
-                        bg: "brand.200",
-                        transitionDuration: '0.2s',
-                        transitionTimingFunction: "ease-in-out"
-                      }}
-                      onMouseOver={over}
-                      onMouseOut={out} />
-                    <InputRightElement width='3.0rem'>
-                      <IconButton
-                        h='2.0rem'
-                        colorScheme='purple'
-                        aria-label='Search'
-                        icon={<FaPlus />}
-                        type='submit'
-                        onClick={onClose}
-                      />
-                    </InputRightElement>
+                  <Input {...register('folderName')}
+                    w='100%'
+                    focusBorderColor='purple.400'
+                    _hover={{
+                      bg: "brand.200",
+                      transitionDuration: '0.2s',
+                      transitionTimingFunction: "ease-in-out"
+                    }}
+                    onMouseOver={over}
+                    onMouseOut={out} />
+                  <InputRightElement width='3.0rem'>
+                    <IconButton
+                      h='2.0rem'
+                      colorScheme='purple'
+                      aria-label='Search'
+                      icon={<FaPlus />}
+                      type='submit'
+                      onClick={onClose}
+                    />
+                  </InputRightElement>
                 </InputGroup>
               </FormControl>
             </form>

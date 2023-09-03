@@ -6,6 +6,7 @@ import { FaXmark } from "react-icons/fa6";
 import { usePodcastSearchContext } from '../PodcastSearchContext';
 import { updateItems } from '@/utils/UpdateItems';
 import { useRouter } from 'next/navigation';
+import { useUserContext } from '../user/UserContext';
 
 interface FolderListProps {
   folder: FolderData;
@@ -15,19 +16,18 @@ const FolderList: React.FC<FolderListProps> = ({ folder }) => {
   const { setItems } = usePodcastSearchContext();
   const router = useRouter();
   const toast = useToast();
+  const { authFetch } = useUserContext();
 
   const removeFolder = async () => {
-    const requestOptions = {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-    }
-
-    await fetch(
+    await authFetch(
       process.env.NEXT_PUBLIC_POD_API_URL +
-      '/api/folder/' + folder.id, requestOptions
+      '/api/folder/' + folder.id, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+      }
     );
 
-    updateItems(setItems);
+    updateItems(setItems, authFetch);
     router.back()
 
     toast({

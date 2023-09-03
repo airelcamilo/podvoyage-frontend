@@ -4,14 +4,16 @@ import PodcastDetail from "@/components/podcast/PodcastDetail";
 import { Box, Center, CircularProgress, Text } from "@chakra-ui/react";
 import { useState, useEffect } from 'react';
 import { PodcastData } from "@/interface/types/PodcastData";
+import { useUserContext } from "@/components/user/UserContext";
 
 const Result = ({ params }: { params: { id: string } }) => {
   const [isLoading, setLoading] = useState(true);
   const [result, setResult] = useState<PodcastData>();
+  const { authFetch } = useUserContext();
 
   const fetchData = async () => {
     setLoading(true);
-    const response = await fetch(
+    const response = await authFetch(
       process.env.NEXT_PUBLIC_POD_API_URL +
       '/api/search-pod/' + params.id
     );

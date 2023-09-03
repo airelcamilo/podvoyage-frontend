@@ -1,6 +1,7 @@
 export interface PodcastData {
   id: number;
   trackId: number;
+  userId: number;
   trackName: string;
   artistName: string;
   feedUrl: string;
@@ -20,6 +21,7 @@ export interface EpisodeData {
   id: number;
   podcastId: number;
   trackId: number;
+  userId: number;
   title: string;
   desc: string;
   season: number;

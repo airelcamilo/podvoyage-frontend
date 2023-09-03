@@ -1,5 +1,6 @@
 export interface ItemData {
     id: number;
+    userId: number;
     type: string;
     name: string;
     artistName: string;

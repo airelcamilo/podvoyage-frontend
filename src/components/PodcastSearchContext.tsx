@@ -4,17 +4,22 @@ import { ItemData } from '@/interface/types/ItemData';
 import { PodcastData } from '@/interface/types/PodcastData';
 import { SearchResult } from '@/interface/types/SearchResult';
 import { createContext, useContext, useEffect, useState } from 'react';
+import { useUserContext } from './user/UserContext';
 
 interface PodcastSearchData {
   results: PodcastData[];
   setResults: (data: PodcastData[]) => void;
+
   items: ItemData[];
   setItems: (data: ItemData[]) => void;
+
   podcasts: PodcastData[];
   setPodcasts: (data: PodcastData[]) => void;
+
   resultCount: number;
   setResultCount: (data: number) => void;
-  isSearch: boolean
+
+  isSearch: boolean;
   isLoading: boolean;
   fetchData: (query: Record<string, string>) => void;
 }
@@ -26,7 +31,7 @@ export const PodcastSearchContext = createContext<PodcastSearchData>(
 export const usePodcastSearchContext = () => useContext(PodcastSearchContext);
 
 export const PodcastSearchContextProvider: React.FC<ChildrenProps> = ({
-  children,
+  children
 }) => {
   const [results, setResults] = useState<PodcastData[]>([]);
   const [items, setItems] = useState<ItemData[]>([]);
@@ -34,9 +39,10 @@ export const PodcastSearchContextProvider: React.FC<ChildrenProps> = ({
   const [resultCount, setResultCount] = useState<number>(0);
   const [isLoading, setLoading] = useState(true);
   const [isSearch, setSearch] = useState(true);
+  const { isAuthenticated, authFetch } = useUserContext();
 
   const getPodcasts = async () => {
-    const response = await fetch(
+    const response = await authFetch(
       process.env.NEXT_PUBLIC_POD_API_URL +
       '/api/podcasts'
     );
@@ -46,7 +52,7 @@ export const PodcastSearchContextProvider: React.FC<ChildrenProps> = ({
   }
 
   const getItems = async () => {
-    const response = await fetch(
+    const response = await authFetch(
       process.env.NEXT_PUBLIC_POD_API_URL +
       '/api/all'
     );
@@ -58,15 +64,13 @@ export const PodcastSearchContextProvider: React.FC<ChildrenProps> = ({
   }
 
   const getSearch = async (param: String) => {
-    const requestOptions = {
+    const response = await authFetch(
+      process.env.NEXT_PUBLIC_POD_API_URL +
+      '/api/search-all', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ podcastName: param })
     }
-
-    const response = await fetch(
-      process.env.NEXT_PUBLIC_POD_API_URL +
-      '/api/search-all', requestOptions
     );
 
     const data: BaseResponse<SearchResult> = await response.json();
@@ -89,12 +93,17 @@ export const PodcastSearchContextProvider: React.FC<ChildrenProps> = ({
   };
 
   useEffect(() => {
-    fetchData({});
+    if (isAuthenticated) {
+      fetchData({});
+    }
   }, []);
 
   return (
     <PodcastSearchContext.Provider
-      value={{ results, setResults, items, setItems, podcasts, setPodcasts, resultCount, setResultCount, isSearch, isLoading, fetchData }}
+      value={{
+        results, setResults, items, setItems, podcasts, setPodcasts,
+        resultCount, setResultCount, isSearch, isLoading, fetchData
+      }}
     >
       {children}
     </PodcastSearchContext.Provider>

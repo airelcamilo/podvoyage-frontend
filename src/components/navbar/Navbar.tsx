@@ -1,10 +1,11 @@
 'use client'
 
-import { IconButton, ButtonGroup, Avatar, Flex, Spacer } from '@chakra-ui/react'
+import { IconButton, ButtonGroup, Flex, Spacer } from '@chakra-ui/react'
 import { FaHouseChimney, FaAngleLeft } from "react-icons/fa6";
 import Searchbar from './Searchbar';
 import { usePodcastSearchContext } from '../PodcastSearchContext';
 import { useRouter, usePathname } from 'next/navigation';
+import UserPopupButton from '../user/UserPopupButton';
 
 const Navbar = () => {
   const { fetchData } = usePodcastSearchContext();
@@ -35,16 +36,14 @@ const Navbar = () => {
         backdropFilter="saturate(180%) blur(5px)">
         <ButtonGroup gap='2'>
           <IconButton marginRight={[1, 2, 2, 2]}
-            colorScheme='purple'
+            variant='customTransparent'
             aria-label='Home'
-            isRound={true}
             onClick={home}
             icon={<FaHouseChimney />}
           />
           <IconButton
-            colorScheme='purple'
+            variant='customTransparent'
             aria-label='Back'
-            isRound={true}
             onClick={back}
             icon={<FaAngleLeft />}
           />
@@ -52,7 +51,7 @@ const Navbar = () => {
         <Spacer />
         <Searchbar />
         <Spacer />
-        <Avatar name='Airel' src='https://bit.ly/dan-abramov' size='sm' />
+        <UserPopupButton />
       </Flex>
     </>
   )

@@ -1,8 +1,10 @@
 import { ItemData } from "@/interface/types/ItemData";
 import { PodcastData } from "@/interface/types/PodcastData";
 
-export const updateItems = async (setItems: (data: ItemData[]) => void) => {
-  const response = await fetch(
+export const updateItems = async (
+  setItems: (data: ItemData[]) => void,
+  authFetch: (input: RequestInfo | URL, init?: RequestInit | undefined) => Promise<Response>) => {
+  const response = await authFetch(
     process.env.NEXT_PUBLIC_POD_API_URL +
     '/api/all'
   );
@@ -11,12 +13,14 @@ export const updateItems = async (setItems: (data: ItemData[]) => void) => {
   setItems(data);
 }
 
-export const updatePodcasts = async (setPodcasts: (data: PodcastData[]) => void) => {
-    const response = await fetch(
-      process.env.NEXT_PUBLIC_POD_API_URL +
-      '/api/podcasts'
-    );
+export const updatePodcasts = async (
+  setPodcasts: (data: PodcastData[]) => void,
+  authFetch: (input: RequestInfo | URL, init?: RequestInit | undefined) => Promise<Response>) => {
+  const response = await authFetch(
+    process.env.NEXT_PUBLIC_POD_API_URL +
+    '/api/podcasts'
+  );
 
-    const data: PodcastData[] = await response.json();
-    setPodcasts(data);
-  }
+  const data: PodcastData[] = await response.json();
+  setPodcasts(data);
+}

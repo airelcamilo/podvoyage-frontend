@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import { usePodcastSearchContext } from "../PodcastSearchContext";
 import { updateItems, updatePodcasts } from "@/utils/UpdateItems";
 import ChangeFolderButton from "./ChangeFolderButton";
+import { useUserContext } from "../user/UserContext";
 
 interface PodcastDetailProps {
   podcast: PodcastData
@@ -17,7 +18,9 @@ const PodcastDetail: React.FC<PodcastDetailProps> = ({ podcast, isSaved }) => {
   const [clientWindowHeight, setClientWindowHeight] = useState(500);
   const [isSavedState, setIsSavedState] = useState(isSaved);
   const [itemsAmount, setItemsAmount] = useState(10);
+  const [podcastId, setPodcastId] = useState(0);
   const toast = useToast();
+  const { authFetch } = useUserContext();
 
   const handleScroll = () => {
     if (window.scrollY >= clientWindowHeight + 500) {
@@ -27,21 +30,21 @@ const PodcastDetail: React.FC<PodcastDetailProps> = ({ podcast, isSaved }) => {
   };
 
   const subscribe = async () => {
-    const requestOptions = {
+    const response = await authFetch(
+      process.env.NEXT_PUBLIC_POD_API_URL +
+      '/api/podcast', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(podcast)
     }
-
-    await fetch(
-      process.env.NEXT_PUBLIC_POD_API_URL +
-      '/api/podcast', requestOptions
-    );
+    )
+    const data: PodcastData = await response.json();
 
     setIsSavedState(true);
-    updateItems(setItems);
-    updatePodcasts(setPodcasts);
-    podcast.id = items[items.length - 1].podcastId;
+    updateItems(setItems, authFetch);
+    updatePodcasts(setPodcasts, authFetch);
+    setPodcastId(data.id);
+    console.log(data);
 
     toast({
       title: `Subscribe`,
@@ -54,20 +57,18 @@ const PodcastDetail: React.FC<PodcastDetailProps> = ({ podcast, isSaved }) => {
   }
 
   const unsubscribe = async () => {
-    const requestOptions = {
+    await authFetch(
+      process.env.NEXT_PUBLIC_POD_API_URL +
+      '/api/podcast/' + (podcast.id == 0 ? podcastId : podcast.id), {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
     }
-
-    await fetch(
-      process.env.NEXT_PUBLIC_POD_API_URL +
-      '/api/podcast/' + podcast.id, requestOptions
+    ).then(() => {
+      setIsSavedState(false);
+      updateItems(setItems, authFetch);
+      updatePodcasts(setPodcasts, authFetch);
+    }
     );
-
-    setIsSavedState(false);
-    updateItems(setItems);
-    updatePodcasts(setPodcasts);
-    podcast.id = items[items.length - 1].podcastId;
 
     toast({
       title: `Unsubscribe`,
@@ -105,7 +106,7 @@ const PodcastDetail: React.FC<PodcastDetailProps> = ({ podcast, isSaved }) => {
                 w={(isSavedState) ? 'fit-content' : '100%'}>
                 {(isSavedState) ? 'Unsubscribe' : 'Subscribe'}
               </Button>
-              {(isSavedState) ? <ChangeFolderButton podcast={podcast}/> : ''}
+              {(isSavedState) ? <ChangeFolderButton podcastId={podcast.id == 0 ? podcastId : podcast.id} /> : ''}
             </ButtonGroup>
             <Heading mx={['20px', '20px', '40px', '40px']} as='u' fontSize='xl' my={4}>Episodes</Heading>
             {podcast.episodes != undefined && podcast.episodes.slice(0, itemsAmount).map((episode) => (

@@ -15,10 +15,10 @@ const DisplayTrack: React.FC<DisplayTrackProps> = ({ episode, artistName }) => {
           src={episode.artworkUrl}
           alt={episode.title}
           borderRadius='4px'
-          boxSize={['50px', '50px', '80px', '80px']}
+          boxSize={['50px', '70px', '80px', '80px']}
           align='start'
         />
-        <Show above='sm'>
+        <Show above='md'>
           <VStack maxW={['500px', '700px', '700px', '900px']} justifyContent='center' align='start' mr='20px'>
             <Heading
               color='white'

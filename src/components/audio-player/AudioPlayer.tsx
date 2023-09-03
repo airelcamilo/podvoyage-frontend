@@ -5,6 +5,7 @@ import { useRef, useEffect, useState } from 'react';
 import { EpisodeData } from '@/interface/types/PodcastData';
 import { Flex, VStack, Center, Box } from '@chakra-ui/react';
 import { BaseResponse } from '@/interface/types/BaseResponse';
+import { useUserContext } from '../user/UserContext';
 
 interface AudioPlayerProps {
   setEpisode: any;
@@ -17,18 +18,17 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ setEpisode, episode, artistNa
   const audioRef = useRef<HTMLAudioElement | undefined>(
     typeof Audio !== "undefined" ? new Audio("") : undefined
   );
-  const progressBarRef = useRef()
-  const [currentTime, setCurrentTime] = useState<number>(0)
+  const progressBarRef = useRef();
+  const [currentTime, setCurrentTime] = useState<number>(0);
+  const { authFetch } = useUserContext();
 
   const markAsPlayed = async () => {
-    const requestOptions = {
+    const response = await authFetch(
+      process.env.NEXT_PUBLIC_POD_API_URL +
+      '/api/played/' + episode!.id, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' }
     }
-
-    const response = await fetch(
-      process.env.NEXT_PUBLIC_POD_API_URL +
-      '/api/played/' + episode!.id, requestOptions
     );
 
     const data: BaseResponse<EpisodeData> = await response.json();
@@ -38,28 +38,24 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ setEpisode, episode, artistNa
 
   const markAsNotPlayed = async () => {
     episode!.played = false;
-    const requestOptions = {
+    await authFetch(
+      process.env.NEXT_PUBLIC_POD_API_URL +
+      '/api/played/' + episode!.id, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' }
     }
-
-    await fetch(
-      process.env.NEXT_PUBLIC_POD_API_URL +
-      '/api/played/' + episode!.id, requestOptions
     );
   }
 
   const setCurrentTimeinAPI = async () => {
     const currentTime = audioRef.current!.currentTime;
-    const requestOptions = {
+    await authFetch(
+      process.env.NEXT_PUBLIC_POD_API_URL +
+      '/api/current-time/' + episode!.id, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ currentTime: currentTime.toString() })
     }
-
-    await fetch(
-      process.env.NEXT_PUBLIC_POD_API_URL +
-      '/api/current-time/' + episode!.id, requestOptions
     );
     episode!.currentTime = currentTime;
   }
@@ -69,7 +65,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ setEpisode, episode, artistNa
       audioRef.current!.src = episode?.audio;
       audioRef.current!.currentTime = episode.currentTime;
       setCurrentTime(episode.currentTime);
-  
+
       if (episode!.played) {
         markAsNotPlayed();
       }
@@ -97,7 +93,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ setEpisode, episode, artistNa
           justifyContent='center'
           left={["0", "0", "5%", "15%"]}>
           <Center w='100%' p={["10px", "15px", "20px", "20px"]}>
-            <Box w={["20%", "60%", "50%", "50%", "50%", "50%"]}>
+            <Box w={["20%", "30%", "50%", "50%", "50%", "50%"]}>
               <DisplayTrack episode={episode} artistName={artistName} />
             </Box>
             {isModal
@@ -106,7 +102,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ setEpisode, episode, artistNa
                 <Controls
                   audioRef={audioRef}
                   progressBarRef={progressBarRef}
-                  setCurrentTime={setCurrentTime} 
+                  setCurrentTime={setCurrentTime}
                   setCurrentTimeinAPI={setCurrentTimeinAPI}
                   markAsPlayed={markAsPlayed} />
                 <ProgressBar
