@@ -3,7 +3,7 @@ import { Menu, MenuButton, MenuList, MenuOptionGroup, MenuItemOption, Button } f
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { FaFolderOpen } from "react-icons/fa6";
-import { usePodcastSearchContext } from '../PodcastSearchContext';
+import { usePodcastsContext } from '../context/PodcastsContext';
 import { updateItems } from '@/utils/UpdateItems';
 import { useUserContext } from '../user/UserContext';
 
@@ -12,7 +12,7 @@ interface ChangeFolderButtonProps {
 }
 
 const ChangeFolderButton: React.FC<ChangeFolderButtonProps> = ({ podcastId }) => {
-  const { setItems } = usePodcastSearchContext();
+  const { setItems } = usePodcastsContext();
   const [folders, setFolders] = useState<FolderData[]>([]);
   const [inFolder, setInFolder] = useState<number>(0);
   const { authFetch } = useUserContext();
@@ -43,7 +43,6 @@ const ChangeFolderButton: React.FC<ChangeFolderButtonProps> = ({ podcastId }) =>
       process.env.NEXT_PUBLIC_POD_API_URL +
       '/api/change-folder/' + folderId + '/' + podcastId
     );
-    updateItems(setItems, authFetch);
   }
 
   useEffect(() => {
@@ -58,17 +57,17 @@ const ChangeFolderButton: React.FC<ChangeFolderButtonProps> = ({ podcastId }) =>
           <FaFolderOpen />
         </MenuButton>
         <MenuList minWidth='240px'>
-            <MenuOptionGroup
-              title='Change folder'
-              type='radio'
-              onChange={(e) => handleChange(e)} 
-              value={inFolder?.toString()}
-              defaultValue='0'>
-              <MenuItemOption value='0'>Home</MenuItemOption>
-              {folders != undefined && folders.map((folder) => (
-                <MenuItemOption key={folder.id} value={folder.id.toString()}>{folder.folderName}</MenuItemOption>
-              ))}
-            </MenuOptionGroup>
+          <MenuOptionGroup
+            title='Change folder'
+            type='radio'
+            onChange={(e) => handleChange(e)}
+            value={inFolder?.toString()}
+            defaultValue='0'>
+            <MenuItemOption value='0'>Home</MenuItemOption>
+            {folders != undefined && folders.map((folder) => (
+              <MenuItemOption key={folder.id} value={folder.id.toString()}>{folder.folderName}</MenuItemOption>
+            ))}
+          </MenuOptionGroup>
         </MenuList>
       </Menu>
     </>

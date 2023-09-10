@@ -15,6 +15,14 @@ const Controls: React.FC<ControlsProps> = ({ audioRef, progressBarRef, setCurren
   const [isBackward, setIsBackward] = useState(false);
   const [isForward, setIsForward] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+  const [playbackSpeed, setPlaybackSpeed] = useState(() => {
+    if (localStorage.getItem('playback-speed')?.length == undefined) {
+      localStorage.setItem('playback-speed', '1.0');
+      return '1.0';
+    } else {
+      return localStorage.getItem('playback-speed')!;
+    }
+  });
   const playAnimationRef = useRef();
 
   const togglePlayPause = () => {
@@ -38,7 +46,7 @@ const Controls: React.FC<ControlsProps> = ({ audioRef, progressBarRef, setCurren
         {/* 
         // @ts-ignore */}
         playAnimationRef.current = requestAnimationFrame(repeat);
-        if (progressBarRef != null) {
+        if (progressBarRef.current != null) {
           progressBarRef.current.value = currentTime;
           setCurrentTime(currentTime);
         }
@@ -120,7 +128,7 @@ const Controls: React.FC<ControlsProps> = ({ audioRef, progressBarRef, setCurren
             variant='customTransparent'
             mx='10%' />
 
-          <PlaybackSpeedButton audioRef={audioRef} />
+          <PlaybackSpeedButton audioRef={audioRef} playbackSpeed={playbackSpeed} setPlaybackSpeed={setPlaybackSpeed} />
         </Center>
       </HStack>
     </>

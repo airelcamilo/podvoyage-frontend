@@ -1,7 +1,7 @@
 import ChildrenProps from '@/interface/types/ChildrenProps';
 import { EpisodeData } from '@/interface/types/PodcastData';
-import { createContext, useContext, useEffect, useState } from 'react';
-import AudioPlayer from './audio-player/AudioPlayer';
+import { createContext, useContext, useState } from 'react';
+import AudioPlayer from '../audio-player/AudioPlayer';
 
 interface PlayerContextData {
   episodePlayed: EpisodeData | undefined;
@@ -22,13 +22,9 @@ export const PlayerContextProvider: React.FC<ChildrenProps> = ({
   const [episodePlayed, setEpisodePlayed] = useState<EpisodeData>();
   const [artistName, setArtistName] = useState<string>();
 
-  useEffect(() => {
-    // GET FROM COOKIES?
-  }, []);
-
   return (
     <PlayerContext.Provider
-      value={{episodePlayed, setEpisodePlayed, artistName, setArtistName }}
+      value={{ episodePlayed, setEpisodePlayed, artistName, setArtistName }}
     >
       {children}
       <AudioPlayer setEpisode={setEpisodePlayed} episode={episodePlayed} artistName={artistName} isModal={false} />

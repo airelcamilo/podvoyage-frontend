@@ -2,17 +2,16 @@
 
 import { Input, InputGroup, InputRightElement, IconButton, FormControl, HStack } from '@chakra-ui/react';
 import { FaMagnifyingGlass } from "react-icons/fa6";
-import { usePodcastSearchContext } from '../PodcastSearchContext';
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
-import { useRouter, usePathname } from 'next/navigation'
+import { useRouter } from 'next/navigation'
+import { useSearchContext } from '../context/SearchContext';
 
 const Searchbar = () => {
-  const { fetchData } = usePodcastSearchContext();
+  const { search } = useSearchContext();
   const { handleSubmit, register } = useForm();
   const [isHover, setIsHover] = useState(false);
   const router = useRouter();
-  const pathname = usePathname();
 
   const over = () => {
     setIsHover(true);
@@ -22,9 +21,8 @@ const Searchbar = () => {
   }
 
   const onSubmit = (query: any) => {
-    if (pathname != '/')
-      router.push('/')
-    fetchData(query);
+    search(query);
+    router.push('/search')
   }
 
   return (

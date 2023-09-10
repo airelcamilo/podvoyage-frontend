@@ -5,15 +5,16 @@ import { FaSliders } from "react-icons/fa6";
 
 interface PlaybackSpeedButtonProps {
   audioRef: any;
+  playbackSpeed: string;
+  setPlaybackSpeed: any;
 }
 
-const PlaybackSpeedButton: React.FC<PlaybackSpeedButtonProps> = ({ audioRef }) => {
-  const [ playbackSpeed, setPlaybackSpeed ] = useState<string>('1.0');
+const PlaybackSpeedButton: React.FC<PlaybackSpeedButtonProps> = ({ audioRef, playbackSpeed, setPlaybackSpeed }) => {
   const { getInputProps, getIncrementButtonProps, getDecrementButtonProps } =
     useNumberInput({
       step: 0.1,
-      defaultValue: parseFloat(localStorage.getItem('playback-speed')!),
       min: 0.5,
+      defaultValue: parseFloat(playbackSpeed),
       max: 5,
       precision: 1,
     })
@@ -23,30 +24,21 @@ const PlaybackSpeedButton: React.FC<PlaybackSpeedButtonProps> = ({ audioRef }) =
   const input = getInputProps()
 
   useEffect(() => {
-    if (localStorage.getItem('playback-speed')?.length == 0) {
-      localStorage.setItem('playback-speed', '1.0');
-      setPlaybackSpeed('1.0');
-    } else {
-      input.value = parseFloat(localStorage.getItem('playback-speed')!);
-      setPlaybackSpeed(localStorage.getItem('playback-speed')!);
-    }
-  }, []);
-
-  useEffect(() => {
     audioRef.current.playbackRate = input.value;
     localStorage.setItem('playback-speed', input.value);
+    setPlaybackSpeed(input.value);
   }, [input]);
 
 
   return (
     <>
-      <Menu closeOnSelect={false} matchWidth>
+      <Menu placement='top-end' closeOnSelect={false} >
         <MenuButton
           as={IconButton}
           variant='customTransparent'
           aria-label='Set playback speed'
           isRound={true}
-          icon={<FaSliders size='25px' />}>
+          icon={<FaSliders size='25px' />} >
         </MenuButton>
         <MenuList minW='170px' px='5px'>
           <HStack>

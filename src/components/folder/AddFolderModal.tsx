@@ -1,10 +1,9 @@
 import { Modal, ModalOverlay, ModalContent, ModalCloseButton, ModalBody, IconButton, FormControl, InputGroup, Input, InputRightElement, Text, useToast } from '@chakra-ui/react';
 import React from 'react';
-import { usePodcastSearchContext } from '../PodcastSearchContext';
+import { usePodcastsContext } from '../context/PodcastsContext';
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import { FaPlus } from "react-icons/fa6";
-import { updateItems } from '@/utils/UpdateItems';
 import { useUserContext } from '../user/UserContext';
 
 interface AddFolderModalProps {
@@ -13,7 +12,6 @@ interface AddFolderModalProps {
 }
 
 const AddFolderModal: React.FC<AddFolderModalProps> = ({ isOpen, onClose }) => {
-  const { setItems } = usePodcastSearchContext();
   const { handleSubmit, register } = useForm();
   const [isHover, setIsHover] = useState(false);
   const toast = useToast();
@@ -36,8 +34,6 @@ const AddFolderModal: React.FC<AddFolderModalProps> = ({ isOpen, onClose }) => {
       body: JSON.stringify({ folderName: param })
     }
     );
-
-    updateItems(setItems, authFetch);
 
     toast({
       title: `Add folder`,

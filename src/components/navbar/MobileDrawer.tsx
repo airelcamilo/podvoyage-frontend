@@ -7,12 +7,13 @@ import {
 import { FaHouseChimney, FaAngleLeft, FaBars, FaGear, FaRightToBracket } from "react-icons/fa6";
 import { useRouter, usePathname } from 'next/navigation';
 import React, { useRef } from 'react';
-import { usePodcastSearchContext } from '../PodcastSearchContext';
+import { usePodcastsContext } from '../context/PodcastsContext';
 import Searchbar from './Searchbar';
 import { useUserContext } from '../user/UserContext';
+import { useEffect } from 'react';
 
 const Navbar = () => {
-  const { fetchData } = usePodcastSearchContext();
+  const { fetchData } = usePodcastsContext();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
@@ -22,12 +23,17 @@ const Navbar = () => {
   const home = () => {
     if (pathname != '/')
       router.push('/')
-    fetchData({});
   }
 
   const back = () => {
     router.back()
   }
+
+  useEffect(() => {
+    if (pathname == '/') {
+      fetchData({});
+    }
+  }, [pathname])
 
   return (
     <>

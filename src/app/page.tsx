@@ -1,6 +1,6 @@
 'use client'
 
-import PodcastList from "@/components/PodcastList";
+import PodcastList from "@/components/list/PodcastList";
 
 const Home = () => {
   return (

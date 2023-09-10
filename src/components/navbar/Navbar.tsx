@@ -3,24 +3,30 @@
 import { IconButton, ButtonGroup, Flex, Spacer } from '@chakra-ui/react'
 import { FaHouseChimney, FaAngleLeft } from "react-icons/fa6";
 import Searchbar from './Searchbar';
-import { usePodcastSearchContext } from '../PodcastSearchContext';
+import { usePodcastsContext } from '../context/PodcastsContext';
 import { useRouter, usePathname } from 'next/navigation';
 import UserPopupButton from '../user/UserPopupButton';
+import { useEffect } from 'react';
 
 const Navbar = () => {
-  const { fetchData } = usePodcastSearchContext();
+  const { fetchData } = usePodcastsContext();
   const router = useRouter();
   const pathname = usePathname();
 
   const home = () => {
     if (pathname != '/')
-      router.push('/')
-    fetchData({});
+      router.push('/');
   }
 
   const back = () => {
-    router.back()
+    router.back();
   }
+
+  useEffect(() => {
+    if (pathname == '/') {
+      fetchData({});
+    }
+  }, [pathname])
 
   return (
     <>

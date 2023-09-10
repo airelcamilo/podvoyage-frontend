@@ -3,8 +3,6 @@ import { Card, Stack, Flex, Button, Heading, useToast, ButtonGroup } from "@chak
 import PodcastSide from "./PodcastSide";
 import Episode from "./Episode";
 import { useState, useEffect } from 'react';
-import { usePodcastSearchContext } from "../PodcastSearchContext";
-import { updateItems, updatePodcasts } from "@/utils/UpdateItems";
 import ChangeFolderButton from "./ChangeFolderButton";
 import { useUserContext } from "../user/UserContext";
 
@@ -14,7 +12,6 @@ interface PodcastDetailProps {
 }
 
 const PodcastDetail: React.FC<PodcastDetailProps> = ({ podcast, isSaved }) => {
-  const { setItems, items, setPodcasts } = usePodcastSearchContext();
   const [clientWindowHeight, setClientWindowHeight] = useState(500);
   const [isSavedState, setIsSavedState] = useState(isSaved);
   const [itemsAmount, setItemsAmount] = useState(10);
@@ -41,10 +38,7 @@ const PodcastDetail: React.FC<PodcastDetailProps> = ({ podcast, isSaved }) => {
     const data: PodcastData = await response.json();
 
     setIsSavedState(true);
-    updateItems(setItems, authFetch);
-    updatePodcasts(setPodcasts, authFetch);
     setPodcastId(data.id);
-    console.log(data);
 
     toast({
       title: `Subscribe`,
@@ -65,8 +59,6 @@ const PodcastDetail: React.FC<PodcastDetailProps> = ({ podcast, isSaved }) => {
     }
     ).then(() => {
       setIsSavedState(false);
-      updateItems(setItems, authFetch);
-      updatePodcasts(setPodcasts, authFetch);
     }
     );
 

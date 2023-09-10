@@ -1,12 +1,12 @@
 import { EpisodeData, PodcastData } from '@/interface/types/PodcastData';
-import { Flex, Container, Text, Image, Heading, IconButton, Center, Box, Spacer, useDisclosure } from '@chakra-ui/react';
+import { Flex, Container, Text, Image, Heading, IconButton, Center, Box, Spacer, Skeleton, useDisclosure } from '@chakra-ui/react';
 import React from 'react';
 import { FaCirclePlay, FaCirclePause, FaCircleCheck } from 'react-icons/fa6';
 import { useState, useEffect } from 'react';
 import DOMPurify from 'isomorphic-dompurify';
 import EpisodeModal from './EpisodeModal';
 import { convertDate, convertDuration } from '@/utils/Convert';
-import { usePlayerContext } from '../PlayerContext';
+import { usePlayerContext } from '../context/PlayerContext';
 
 interface EpisodeProps {
   episode: EpisodeData;
@@ -16,9 +16,11 @@ interface EpisodeProps {
 const Episode: React.FC<EpisodeProps> = ({ episode, podcast }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isHover, setIsHover] = useState(false);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
   episode.artworkUrl = (episode.artworkUrl == '') ? podcast.artworkUrl600 : episode.artworkUrl;
   const { episodePlayed, setEpisodePlayed, setArtistName } = usePlayerContext();
   const [isPlaying, setIsPlaying] = useState(false);
+  const [desc, setDesc] = useState('');
 
   const over = () => {
     setIsHover(true);
@@ -32,6 +34,43 @@ const Episode: React.FC<EpisodeProps> = ({ episode, podcast }) => {
     setArtistName(podcast.artistName);
     setIsPlaying(true);
   }
+
+  const sanitizeInput = (input: string) => {
+    const sanitizedInput = DOMPurify.sanitize(input);
+    const elementCount = countElementsInDOM(sanitizedInput);
+
+    if (elementCount > 7) {
+      const truncatedInput = truncateHTML(sanitizedInput, 7);
+      return truncatedInput;
+    }
+
+    return sanitizedInput;
+  }
+
+  const countElementsInDOM = (html: any) => {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+    return doc.querySelectorAll('*').length;
+  };
+
+  const truncateHTML = (html: any, maxElements: number) => {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+    const elements = doc.querySelectorAll('*');
+
+    if (elements.length > maxElements) {
+      for (let i = maxElements; i < elements.length; i++) {
+        const element = elements[i];
+        element.parentNode!.removeChild(element);
+      }
+    }
+
+    return doc.documentElement.outerHTML;
+  }
+
+  useEffect(() => {
+    setDesc(sanitizeInput(episode.desc));
+  }, []);
 
   useEffect(() => {
     if (episode == undefined || episodePlayed?.title != episode.title) {
@@ -51,15 +90,23 @@ const Episode: React.FC<EpisodeProps> = ({ episode, podcast }) => {
         cursor='pointer'
         bg={episode.played ? '#07000a' : 'inherit'}>
         <Flex gap={4}>
-          <Image
-            src={episode.artworkUrl}
-            alt={episode.title}
-            borderRadius='4px'
-            boxSize={['0', '50px', '100px', '100px']}
-            align='start'
-            onClick={onOpen}
-          />
-          <Box maxW='700px' onClick={onOpen}>
+          <Skeleton
+            startColor='purple.400'
+            endColor='purple'
+            isLoaded={isImageLoaded}
+            height={['0', '50px', '100px', '100px']}
+            width={['0', '50px', '100px', '100px']}>
+            <Image
+              src={episode.artworkUrl}
+              alt={episode.title}
+              borderRadius='4px'
+              boxSize={['0', '50px', '100px', '100px']}
+              align='start'
+              onClick={onOpen}
+              onLoad={() => setIsImageLoaded(true)}
+            />
+          </Skeleton>
+          <Box maxW={['350px', '60%', '60%', '60%']} onClick={onOpen}>
             <Heading
               color={episode.played ? 'purple.300' : 'white'}
               fontSize='md'
@@ -73,7 +120,7 @@ const Episode: React.FC<EpisodeProps> = ({ episode, podcast }) => {
               noOfLines={3}
               mb='7px'
               dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(episode.desc)
+                __html: desc
               }}></Text>
             <Box
               fontSize='xs'
@@ -88,7 +135,7 @@ const Episode: React.FC<EpisodeProps> = ({ episode, podcast }) => {
                 aria-label='Played'
                 isRound={true}
                 onClick={play}
-                icon={<FaCircleCheck size='40px' /> }
+                icon={<FaCircleCheck size='40px' />}
                 variant="custom" />
               : <IconButton
                 aria-label='Play'

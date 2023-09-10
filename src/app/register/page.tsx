@@ -7,10 +7,12 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import CustomInput from "@/components/input/CustomInput";
 import { useState } from "react";
+import { usePodcastsContext } from "@/components/context/PodcastsContext";
 
 const Register = () => {
   const router = useRouter();
   const { validate } = useUserContext();
+  const { fetchData } = usePodcastsContext();
   const { handleSubmit, register } = useForm();
   const toast = useToast();
   const [nameErrorMessage, setNameErrorMessage] = useState('');
@@ -77,17 +79,19 @@ const Register = () => {
 
     const data = await response.json();
     if (response.status == 200) {
-      validate(data.token);
-      router.replace("/");
+      validate(data.token).then(() => {
+        fetchData({});
+        router.replace("/");
 
-      toast({
-        title: `Register`,
-        description: `Successfully register your account`,
-        status: 'success',
-        duration: 5000,
-        isClosable: true,
-        position: 'top',
-      })
+        toast({
+          title: `Register`,
+          description: `Successfully register your account`,
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+          position: 'top',
+        })
+      });
     } else {
       if (data == "username already taken") {
         setUsernameErrorMessage("Username already taken");

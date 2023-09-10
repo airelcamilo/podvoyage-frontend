@@ -1,5 +1,5 @@
 import { ItemData } from "@/interface/types/ItemData";
-import { Card, Image, Stack, Heading, Text } from "@chakra-ui/react";
+import { Card, Image, Stack, Heading, Text, Skeleton } from "@chakra-ui/react";
 import { useState } from 'react';
 import { useRouter } from 'next/navigation'
 
@@ -9,6 +9,7 @@ interface ItemBoxProps {
 
 const ItemBox: React.FC<ItemBoxProps> = ({ item }) => {
   const [isHover, setIsHover] = useState(false);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
   const router = useRouter()
 
   const over = () => {
@@ -33,14 +34,16 @@ const ItemBox: React.FC<ItemBoxProps> = ({ item }) => {
         alt={item.name}
         borderRadius='4px'
         objectFit='cover'
+        onLoad={() => setIsImageLoaded(true)}
       />
     } else {
       return <Image
-      src='/folderImage.png'
-      alt='Folder'
-      borderRadius='4px'
-      objectFit='cover'
-    />
+        src='/folderImage.png'
+        alt='Folder'
+        borderRadius='4px'
+        objectFit='cover'
+        onLoad={() => setIsImageLoaded(true)}
+      />
     }
   }
 
@@ -58,7 +61,12 @@ const ItemBox: React.FC<ItemBoxProps> = ({ item }) => {
         onMouseOut={out}
         onClick={item.type == 'Podcast' ? podcastClick : folderClick}
         cursor='pointer'>
-        {image()}
+        <Skeleton
+          startColor='purple.400'
+          endColor='purple'
+          isLoaded={isImageLoaded}>
+          {image()}
+        </Skeleton>
         <Stack m='2' spacing='1'>
           <Heading fontSize='md' noOfLines={2} size='md'>{item.name}</Heading>
           <Text fontSize='sm' isTruncated color='gray.100'>

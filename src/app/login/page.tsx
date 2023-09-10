@@ -7,10 +7,12 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import CustomInput from "@/components/input/CustomInput";
 import { useState } from "react";
+import { usePodcastsContext } from "@/components/context/PodcastsContext";
 
 const Login = () => {
   const router = useRouter();
   const { validate } = useUserContext();
+  const { fetchData } = usePodcastsContext();
   const { handleSubmit, register } = useForm();
   const toast = useToast();
   const [emailInvalid, setEmailInvalid] = useState(false);
@@ -40,17 +42,19 @@ const Login = () => {
 
     const data = await response.json();
     if (response.status == 200) {
-      validate(data.token);
-      router.replace("/");
+      validate(data.token).then(() => {
+        fetchData({});
+        router.replace("/")
 
-      toast({
-        title: `Login`,
-        description: `Successfully login to your account`,
-        status: 'success',
-        duration: 5000,
-        isClosable: true,
-        position: 'top',
-      })
+        toast({
+          title: `Login`,
+          description: `Successfully login to your account`,
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+          position: 'top',
+        })
+      });
     } else {
       if (data == "incorrect email") {
         setEmailInvalid(true);
@@ -92,7 +96,7 @@ const Login = () => {
                   icon={FaEllipsis}
                   isPassword
                   isInvalid={passInvalid}
-                  check={() => {}} />
+                  check={() => { }} />
                 {passInvalid
                   ? <Text color='red' mt='5px'>Password is incorrect</Text>
                   : ""

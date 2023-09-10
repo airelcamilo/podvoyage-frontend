@@ -1,9 +1,9 @@
 import { Text, Heading, SimpleGrid, Box, Flex, Spacer, IconButton, useToast } from '@chakra-ui/react';
 import React from 'react';
 import { FolderData } from '@/interface/types/FolderData';
-import ResultBox from '../box/ResultBox';
+import ResultBox from '../list/ResultBox';
 import { FaXmark } from "react-icons/fa6";
-import { usePodcastSearchContext } from '../PodcastSearchContext';
+import { usePodcastsContext } from '../context/PodcastsContext';
 import { updateItems } from '@/utils/UpdateItems';
 import { useRouter } from 'next/navigation';
 import { useUserContext } from '../user/UserContext';
@@ -13,7 +13,6 @@ interface FolderListProps {
 }
 
 const FolderList: React.FC<FolderListProps> = ({ folder }) => {
-  const { setItems } = usePodcastSearchContext();
   const router = useRouter();
   const toast = useToast();
   const { authFetch } = useUserContext();
@@ -22,12 +21,10 @@ const FolderList: React.FC<FolderListProps> = ({ folder }) => {
     await authFetch(
       process.env.NEXT_PUBLIC_POD_API_URL +
       '/api/folder/' + folder.id, {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-      }
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+    }
     );
-
-    updateItems(setItems, authFetch);
     router.back()
 
     toast({
